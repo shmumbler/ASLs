@@ -10,7 +10,5 @@ start
 {
 return current.inGameTimer > 0;
 }
-reset
-{
-return current.inGameTimer == 0;
-}
+
+
