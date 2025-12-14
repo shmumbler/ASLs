@@ -22,5 +22,6 @@ reset
 		if (current.inGameTimer != 0) {				//	Target first frame IGT becomes non-zero.
 			return current.inGameTimer < .1;		//	Reset if first non-zero value of IGT is "close enough" to zero.
 		}
-	}
+	} else {return false;}
 }	
+
