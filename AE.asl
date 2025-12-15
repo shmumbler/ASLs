@@ -5,12 +5,14 @@
 state("Apparatus Exanimus")
 {
 	double inGameTimer: "Apparatus Exanimus.exe", 0x5CF1840, 0x350, 0x20, 0x0, 0x3B0, 0x188, 0x10, 0x68, 0x20, 0x0, 0x20, 0x70;
+	int health: "Apparatus Exanimus.exe", 0x5CF1840, 0x310, 0x188, 0x30, 0x68, 0x20, 0x10, 0x28, 0x48, 0x118;
 }
 
 init
 {
     vars.IGT = new TimeSpan();
 	vars.old = new TimeSpan();
+	vars.death = new bool();
 }
 
 start 
@@ -25,6 +27,7 @@ onStart
 {
     vars.IGT = TimeSpan.Zero;
 	vars.old = TimeSpan.Zero;
+	vars.death = false;
 }
 
 isLoading
@@ -42,11 +45,28 @@ update
 	{
 		vars.old += TimeSpan.FromSeconds(current.inGameTimer);					//Save IGT from load.
 	}
+	if(current.health==0)
+	{
+		vars.death = true;
+	}
 }
 
 gameTime
 {
 	return TimeSpan.FromSeconds(current.inGameTimer) + vars.IGT - vars.old;		//Return IGT plus delta.
+}
+
+split
+{
+	if (current.inGameTimer==0 && old.inGameTimer!=0)							//Split on loads, except in case of deaths.
+	{	
+		if (vars.death==true)
+		{
+			vars.death = false;
+			return false;
+		} 
+		else return true;
+	}
 }
 
 reset
